@@ -1,4 +1,11 @@
 # -*- mode: python; coding: utf-8 -*-
 
-REPOS_PATH = "/usr/src/openstack"
-CACHE_PATH = "/var/cache/analize_logs"
+import os
+
+# By default a ~/openstack-contributions directory will be used to
+# store all the required files (git repository clones and caches).
+#
+BASE_DIR = os.path.join (os.getenv('HOME'), 'openstack-contributions')
+
+REPOS_PATH = os.path.join (BASE_DIR, 'repos')
+CACHE_PATH = os.path.join (BASE_DIR, 'cache')
