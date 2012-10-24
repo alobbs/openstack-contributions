@@ -4,10 +4,8 @@ __author__    = "Alvaro Lopez Ortega"
 __email__     = "alvaro@alobbs.com"
 __license__   = "MIT"
 
-import time
-import calendar
-import datetime
 
+import utils
 
 KNOWN = ['redhat', 'canonical', 'rackspace', 'ibm', 'pistoncloud', 'nebula', 'cloudscaling',
          'nec', 'ntt', 'yahoo', 'citrix', 'calxeda', 'inktank', 'stillhq', 'vmware', 'intel',
@@ -16,8 +14,6 @@ KNOWN = ['redhat', 'canonical', 'rackspace', 'ibm', 'pistoncloud', 'nebula', 'cl
          'internap', 'cloudbase', 'enovance', 'crowdtilt']
 
 
-def date_to_unix (year, month):
-    return calendar.timegm (datetime.datetime(year, month, 1, 0, 0).utctimetuple())
 
 def commit_set_company (commit):
     co     = None
@@ -49,26 +45,26 @@ def commit_set_company (commit):
     elif 'joshua mckenty' in author:
         co = 'nasa'
     elif 'jesse andrews' in author:
-        if author_date < date_to_unix(2011,02):
+        if author_date < utils.date_to_unix(2011,02):
             co = 'nasa'
-        elif author_date < date_to_unix(2011,07):
+        elif author_date < utils.date_to_unix(2011,07):
             co = 'rackspace'
-        elif author_date < date_to_unix(2012,07):
+        elif author_date < utils.date_to_unix(2012,07):
             co = 'nebula'
     elif 'gabriel hurley' in author:
-        if author_date < date_to_unix(2011,07):
+        if author_date < utils.date_to_unix(2011,07):
             co = 'nasa'
         else:
             co = 'nebula'
     elif 'devin carlen' in author:
-        if author_date < date_to_unix(2011,03):
+        if author_date < utils.date_to_unix(2011,03):
             co = 'nasa'
         else:
             co = 'nebula'
     elif 'jay pipes' in author:
-        if author_date < date_to_unix(2011,12):
+        if author_date < utils.date_to_unix(2011,12):
             co = 'rackspace'
-        elif author_date < date_to_unix(2012,06):
+        elif author_date < utils.date_to_unix(2012,06):
             co = 'hp'
         else:
             co = 'att'
