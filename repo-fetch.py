@@ -35,10 +35,10 @@ def checkout_repo (project):
 
 def main():
     # Create directories
-    if not os.path.exists:
+    if not os.path.exists (conf.REPOS_PATH):
         os.makedirs (conf.REPOS_PATH)
 
-    if not os.path.exists:
+    if not os.path.exists (conf.CACHE_PATH):
         os.makedirs (conf.CACHE_PATH)
 
     # Clone repositories
