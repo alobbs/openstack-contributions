@@ -25,6 +25,12 @@ function addGlobalReport (data)
 	   return $.inArray (co_name, companies_activated) >= 0;
     });
 
+    /* Fix the names of the legend */
+    // FIX ME: Something is broken here (Eg: Check and uncheck company)
+    //   $.each (companies_info, function (n, obj) {
+    //      obj.label = capitalise (obj.label);
+    //   });
+
     /* Draw graph */
     Flotr.draw (document.getElementById("global_graph"), companies_info, {
 	   legend: {
@@ -37,6 +43,11 @@ function addGlobalReport (data)
 			 return MONTH_NAMES[date.getMonth()] + date.getYear()%100;
 		  }
 	   },
+	   yaxis : {
+		  min: 0,
+		  max: data.commits_num.highest_value,
+		  tickDecimals: 0,
+	   }
     });
 }
 
