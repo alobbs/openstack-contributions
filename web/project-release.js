@@ -49,6 +49,9 @@ function addGlobalReport (data)
 		  tickDecimals: 0,
 	   }
     });
+
+    /* Unknown commits */
+    $(".unknown_commits_num").html(data.unknown_commits_num);
 }
 
 function addCompanyReports (data)

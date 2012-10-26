@@ -26,7 +26,7 @@ ns = parser.parse_args()
 
 
 class Company_Analyzer:
-    def __init__ (self, company, repo, date_start=None, date_end=None):
+    def __init__ (self, repo, company, date_start=None, date_end=None):
         self.name            = company
         self.repo            = repo
         self.commits_all     = gitlog.get_commits (repo, ns.use_cache)
@@ -53,23 +53,26 @@ class Company_Analyzer:
             authors[author] = len([c for c in commits if c['author'] == author])
         return authors
 
+    def get_unknown_commits (self):
+        return [c for c in self.commits_all if not c.get('company')]
+
     def run (self):
         raise NotImplementedError ('You must implement run()')
 
 
 class Company_Report:
     def __init__ (self, name):
-        self.name               = name
-        self.slices             = []
-        self.total_commits_num  = 0
-        self.total_commits_size = 0
+        self.name                = name
+        self.slices              = []
+        self.total_commits_num   = 0
+        self.total_commits_size  = 0
 
 
 class Company_Analyzer_by_date (Company_Analyzer):
     DEFAULT_LAPSE = 7*24*60*60
 
     def __init__ (self, project, company, date_start=None, date_end=None, lapse=None):
-        Company_Analyzer.__init__ (self, company, project, date_start, date_end)
+        Company_Analyzer.__init__ (self, project, company, date_start, date_end)
         self.lapse = lapse or self.DEFAULT_LAPSE
 
     def _get_time_points (self):
@@ -119,11 +122,12 @@ class Company_Analyzer_by_date (Company_Analyzer):
 
 class HTML_Report_Period_Commits():
     def __init__ (self, project, company_names=None, *args, **kwargs):
-        self.project   = project
-        self.companies = company_names or companies.KNOWN
-        self.args      = args
-        self.kwargs    = kwargs
-        self.report    = {}
+        self.project             = project
+        self.companies           = company_names or companies.KNOWN
+        self.args                = args
+        self.kwargs              = kwargs
+        self.report              = {}
+        self.unknown_commits_num = None
 
     # JSON
     #
@@ -135,7 +139,6 @@ class HTML_Report_Period_Commits():
 
         # Total amount
         total = sum([s[key] for s in self.report[company].slices])
-
         return {"label": company, "data": row, "total": total}
 
     def _get_JSON_property_all_companies (self, key):
@@ -153,11 +156,16 @@ class HTML_Report_Period_Commits():
             tmp = max ([s[key] for s in self.report[company].slices])
             highest_global = max (highest_global, tmp)
 
-        return {"info": companies_jsons, "highest_value": highest_global}
+        # Unknown commits
+
+        # Commits with no associated company
+        return {"info":          companies_jsons,
+                "highest_value": highest_global}
 
     def _get_JSON_all_companies (self):
-        return {'commits_num':  self._get_JSON_property_all_companies ('commits_num'),
-                'commits_size': self._get_JSON_property_all_companies ('commits_size')}
+        return {'commits_num':         self._get_JSON_property_all_companies ('commits_num'),
+                'commits_size':        self._get_JSON_property_all_companies ('commits_size'),
+                "unknown_commits_num": self.unknown_commits_num}
 
     def get_JSON (self):
         # Generate individual reports for the companies
@@ -165,6 +173,9 @@ class HTML_Report_Period_Commits():
             analyzer = Company_Analyzer_by_date (self.project, company, *self.args, **self.kwargs)
             analyzer.run()
             self.report[company] = analyzer.report
+
+            if self.unknown_commits_num is None:
+                self.unknown_commits_num = len(analyzer.get_unknown_commits())
 
         # Print the results
         obj = self._get_JSON_all_companies()
