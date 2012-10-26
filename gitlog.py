@@ -61,6 +61,6 @@ def get_commits (project, use_cache):
         _commits[project] = pickle.load (open (cache_fp, 'r'))
     else:
         _commits[project] = parse_git_log (project)
-        pickle.dump (_commits, open(cache_fp, 'w+'))
+        pickle.dump (_commits[project], open(cache_fp, 'w+'))
 
     return _commits[project]
