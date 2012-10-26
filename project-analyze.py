@@ -128,14 +128,16 @@ class HTML_Report_Period_Commits():
         self.kwargs              = kwargs
         self.report              = {}
         self.unknown_commits_num = None
+        self.time_start          = None
+        self.time_lapse          = None
 
     # JSON
     #
     def _get_JSON_property_company (self, key, company):
         # Data
         row = []
-        for report_slice in self.report[company].slices:
-            row.append ([report_slice['time'], report_slice[key]])
+        for n in range(len(self.report[company].slices)):
+            row.append ([n, self.report[company].slices[n][key]])
 
         # Total amount
         total = sum([s[key] for s in self.report[company].slices])
@@ -165,7 +167,9 @@ class HTML_Report_Period_Commits():
     def _get_JSON_all_companies (self):
         return {'commits_num':         self._get_JSON_property_all_companies ('commits_num'),
                 'commits_size':        self._get_JSON_property_all_companies ('commits_size'),
-                "unknown_commits_num": self.unknown_commits_num}
+                'time_start':          self.time_start,
+                'time_lapse':          self.time_lapse,
+                'unknown_commits_num': self.unknown_commits_num}
 
     def get_JSON (self):
         # Generate individual reports for the companies
@@ -176,6 +180,10 @@ class HTML_Report_Period_Commits():
 
             if self.unknown_commits_num is None:
                 self.unknown_commits_num = len(analyzer.get_unknown_commits())
+            if self.time_start is None:
+                self.time_start = analyzer.date_start
+            if self.time_lapse is None:
+                self.time_lapse = analyzer.lapse
 
         # Print the results
         obj = self._get_JSON_all_companies()

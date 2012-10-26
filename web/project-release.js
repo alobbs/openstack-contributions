@@ -39,7 +39,8 @@ function addGlobalReport (data)
 	   },
 	   xaxis : {
 		  tickFormatter: function (num) {
-			 date = new Date(num * 1000);
+			 unixtime = data.time_start + (num * data.time_lapse);
+			 date = new Date (unixtime * 1000);
 			 return MONTH_NAMES[date.getMonth()] + date.getYear()%100;
 		  }
 	   },
@@ -86,11 +87,13 @@ function addCompanyReports (data)
 
 	   /* Graph: number */
 	   Flotr.draw (document.getElementById(id_graph_num), company_data_num,
-				{title: company_data_num.label,
+				{title: capitalise(company_data_num.label),
 				 bars: {
 					show: true,
-					barWidth: 0.8,
-					lineWidth: 10,
+					barWidth: 0.9,
+					lineWidth: 1,
+					color: '#FF5757',
+					fillColor: ['#FF5757', '#A10000'],
 				 },
 				 xaxis : { showLabels: false },
 				 yaxis : {
@@ -102,24 +105,22 @@ function addCompanyReports (data)
 					verticalLines : false,
 					horizontalLines : true,
 				 },
-				 legend : {
-					position : 'ne',
-					noColumns: 3,
-					margin: 300,
-				 }
 				});
 
 	   /* Graph: Size */
 	   Flotr.draw (document.getElementById(id_graph_size), company_data_size,
 				{bars: {
 				    show: true,
-				    barWidth: 0.8,
-				    lineWidth: 10,
+				    barWidth: 0.9,
+				    lineWidth: 1,
+					color: '#3761D4',
+					fillColor: ['#678AEB', '#3761D4'],
 				 },
 				 xaxis : {
 				 	tickFormatter: function (num) {
-				 	    date = new Date(num * 1000);
-					    return MONTH_NAMES[date.getMonth()];
+					    unixtime = data.time_start + (num * data.time_lapse);
+				 	    date = new Date (unixtime * 1000) ;
+					    return MONTH_NAMES[date.getMonth()] + date.getYear()%100;
 				 	}
 				 },
 				 yaxis : {
@@ -134,11 +135,6 @@ function addCompanyReports (data)
 					verticalLines : false,
 					horizontalLines : true,
 				 },
-				 legend : {
-					position : 'ne',
-					noColumns: 3,
-					margin: 300,
-				 }
 				});
 
 	   /* Contributors lists */
