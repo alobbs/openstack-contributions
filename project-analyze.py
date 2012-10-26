@@ -16,6 +16,7 @@ import patches
 import companies
 import utils
 import releases
+import gitlog
 
 
 # Argument parsing
@@ -24,63 +25,11 @@ parser.add_argument ('--use-cache', action="store_true", default=False, help="us
 ns = parser.parse_args()
 
 
-def parse_git_log (project):
-    # Non-cached
-    cmd = 'git log --no-merges \'--pretty=format:{"author":"%aN", "author_email":"%aE", "author_date": "%at", "committer":"%cN", "committer_email":"%cE", "committer_date": "%ct", "hash":"%H"},\''
-    f = projects.popen (project, cmd)
-    commits = eval('[' + f.read() + ']')
-    commitsn = len(commits)
-
-    # Fix the type of the time entries
-    for n in range(commitsn):
-        commits[n]['author_date']    = int(commits[n]['author_date'])
-        commits[n]['committer_date'] = int(commits[n]['committer_date'])
-
-    # Populate patch sizes
-    for n in range(commitsn):
-        commit = commits[n]
-
-        cmd = 'git show --no-notes %s' %(commit['hash'])
-        f = projects.popen (project, cmd)
-
-        # commit['size'] = len(f.read())
-        commit['size'] = len (patches.filter_contribution(f.read()))
-        print '\r%d%% [%d/%d] %s size=%d%s' %(((n+1) * 100) / commitsn, n, commitsn, commit['hash'], commit['size'], ' '*10),
-
-    return commits
-
-
-_commits = {}
-def get_commits (project):
-    # Cache
-    global _commits
-    if _commits.has_key (project):
-        return _commits[project]
-
-    cache_fp = os.path.join (conf.CACHE_PATH, project + '-log.pickle')
-
-    # Disk cache
-    if ns.use_cache:
-        _commits[project] = pickle.load (open (cache_fp, 'r'))
-    else:
-        _commits[project] = parse_git_log (project)
-        pickle.dump (_commits, open(cache_fp, 'w+'))
-
-    return _commits[project]
-
-
-def figure_out_company (commits):
-    for commit in commits:
-        companies.commit_set_company (commit)
-
-    return commits
-
-
 class Company_Analyzer:
     def __init__ (self, company, repo, date_start=None, date_end=None):
         self.name            = company
         self.repo            = repo
-        self.commits_all     = figure_out_company (get_commits(repo))
+        self.commits_all     = gitlog.get_commits (repo, ns.use_cache)
         self.date_start      = date_start or self.get_first_commit()
         self.date_end        = date_end   or self.get_latest_commit()
         self.commits_company = [c for c in self.commits_all if c.get('company') == company]
@@ -103,7 +52,6 @@ class Company_Analyzer:
         for author in list(set([x['author'] for x in commits])):
             authors[author] = len([c for c in commits if c['author'] == author])
         return authors
-
 
     def run (self):
         raise NotImplementedError ('You must implement run()')
