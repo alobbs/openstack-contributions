@@ -1,3 +1,5 @@
+MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 function getURLParameter (name)
 {
     return decodeURI(
@@ -8,6 +10,34 @@ function getURLParameter (name)
 function capitalise (string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function addGlobalReport (data)
+{
+    /* List of 'checked' companies */
+    var companies_activated = $("#companies").find("label").has("input:checkbox:checked").map(function(){
+	   return $(this).attr('id').replace('control_graph_','');
+    });
+
+    /* Filter the data array */
+    var companies_info = data.commits_num.info.filter (function(co){
+	   var co_name = co.label.replace(/[^a-z]+/gi,'');
+	   return $.inArray (co_name, companies_activated) >= 0;
+    });
+
+    /* Draw graph */
+    Flotr.draw (document.getElementById("global_graph"), companies_info, {
+	   legend: {
+		  noColumns: 10,
+		  container: $("#global_legend")
+	   },
+	   xaxis : {
+		  tickFormatter: function (num) {
+			 date = new Date(num * 1000);
+			 return MONTH_NAMES[date.getMonth()] + date.getYear()%100;
+		  }
+	   },
+    });
 }
 
 function addCompanyReports (data)
@@ -74,18 +104,13 @@ function addCompanyReports (data)
 				 },
 				 xaxis : {
 				 	tickFormatter: function (num) {
-				 	    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 				 	    date = new Date(num * 1000);
-				 	    return months[date.getMonth()];
+					    return MONTH_NAMES[date.getMonth()];
 				 	}
 				 },
 				 yaxis : {
 				 	tickFormatter: function (num) {
 					    return Math.round(num / 1024) + "Kb";
-
-
-				 	    date = new Date(num * 1000);
-				 	    return months[date.getMonth()];
 				 	},
 					min: 0,
 					max: commits_size.highest_value,
@@ -123,6 +148,8 @@ function addCompanyReports (data)
 		  } else {
 			 $('#'+graph_id).hide();
 		  }
+
+		  addGlobalReport (data);
 	   });
     }
 }
@@ -144,6 +171,7 @@ $(function() {
 	   success:   function (data)
 	   {
 		  addCompanyReports (data);
+		  addGlobalReport (data);
 	   }
     });
 });
