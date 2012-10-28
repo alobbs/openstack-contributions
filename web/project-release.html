@@ -1,28 +1,73 @@
 <html>
   <head>
-    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="js/flotr2.min.js"></script>
-    <script type="text/javascript" src="project-release.js"></script>
-    <link rel="stylesheet" type="text/css" href="project-release.css">
+    <meta charset="UTF-8">
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/flotr2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="project-release.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" href="project-release.css">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
   </head>
   <body>
-    <h1></h1>
+    <!-- Navigation bar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">OpenStack Contributions</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div id="bar">
-	 <div id="companies">
-	   <h3>Top 5 Contributors</h3>
-	   <ul id="contributors_top5"></ul>
-	   <h3>Contributors</h3>
-	   <ul id="contributors"></ul>
-	   <h3>Non-Contributors</h3>
-	   <ul id="lazy_fellows"></ul>
+    <!-- Content -->
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list" id="companies">
+              <li class="nav-header">Top 5 Contributors</li>
+		    <li id="contributors_top5"></li>
+              <li class="nav-header">Contributors</li>
+		    <li id="contributors"></li>
+              <li class="nav-header">Non-Contributors</li>
+		    <li id="lazy_fellows"></li>
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+          <div class="hero-unit">
+            <h1></h1>
+		  <div id="global">
+		    <div id="global_graph"></div>
+		    <div id="global_legend"></div>
+		    <p>Additional <span class="unknown_commits_num"></span> commits from individual contributions and unknown companies.</p>
+		  </div>
+		</div>
+		<div id="graphs"></div>
+        </div>
 	 </div>
     </div>
-    <div id="global">
-	 <div id="global_graph"></div>
-	 <div id="global_legend"></div>
-	 <p>Additional <span class="unknown_commits_num"></span> commits from individual contributions and unknown companies.</p>
-    </div>
-    <div id="graphs"></div>
+
+    <!-- Footer -->
+    <hr>
+    <footer>
+      <span><a href="https://github.com/alobbs/openstack-contributions">openstack-contributions</a> at Github</span>
+	 <span style="position:absolute; right: 20px;">&copy; 2012 <a href="mail:alvaro@alobbs.com">Alvaro Lopez Ortega</a></span>
+    </footer>
   </body>
 </html>
