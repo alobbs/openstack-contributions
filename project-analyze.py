@@ -191,7 +191,17 @@ class HTML_Report_Period_Commits():
 
 
 def generate_release_commits_HTML_report():
-    for r in releases.releases:
+    # Periods = Releases + Global
+    all_projects = list(set(reduce(lambda x,y: x+y, [r['projects'] for r in releases.releases])))
+
+    periods = releases.releases[:]
+    periods.append ({'name':    "Global",
+                     'period':  (releases.releases[0]['period'][0],
+                                 releases.releases[-1]['period'][1]),
+                     'projects': all_projects})
+
+    # Generate reports
+    for r in periods:
         for proj_name in r['projects']:
             # Generate report
             report = HTML_Report_Period_Commits (proj_name,
