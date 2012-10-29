@@ -15,3 +15,20 @@ releases = [
     {"name": "Folsom",  "period": (d(2012,4),  d(2012,9)),  "projects": ['nova', 'swift', 'glance', 'keystone', 'horizon', 'quantum', 'cinder']},
     {"name": "Grizzly", "period": (d(2012,9),  d(2013,3)),  "projects": ['nova', 'swift', 'glance', 'keystone', 'horizon', 'quantum', 'cinder']},
 ]
+
+
+def get_all_releaes_dicts (add_global = False):
+    # Do not add 'global'
+    if not add_global:
+        return releases[:]
+
+    # Add 'global'
+    all_projects = list(set(reduce(lambda x,y: x+y, [r['projects'] for r in releases])))
+
+    rls = releases[:]
+    rls.append ({'name':    "Global",
+                 'period':  (releases[0]['period'][0],
+                             releases[-1]['period'][1]),
+                 'projects': all_projects})
+
+    return rls

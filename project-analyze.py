@@ -8,7 +8,6 @@ __license__   = "MIT"
 import os
 import conf
 import time
-import pickle
 import json
 import argparse
 import projects
@@ -16,8 +15,7 @@ import patches
 import companies
 import utils
 import releases
-import gitlog
-
+import analyzer
 
 # Argument parsing
 parser = argparse.ArgumentParser()
@@ -25,39 +23,15 @@ parser.add_argument ('--use-cache', action="store_true", default=False, help="us
 ns = parser.parse_args()
 
 
-class Company_Analyzer:
+class Company_Analyzer (analyzer.Analyzer_Base):
     def __init__ (self, repo, company, date_start=None, date_end=None):
+        analyzer.Analyzer_Base.__init__ (self, repo, company, ns.use_cache, date_start, date_end)
         self.name            = company
-        self.repo            = repo
-        self.commits_all     = gitlog.get_commits (repo, ns.use_cache)
-        self.date_start      = date_start or self.get_first_commit()
-        self.date_end        = date_end   or self.get_latest_commit()
-        self.commits_company = [c for c in self.commits_all if c.get('company') == company]
-        self.commits         = self._get_filtered_commits_by_date (self.commits_company,
-                                                                   self.date_start,
-                                                                   self.date_end)
+        self.company_commits = self.commits_filtered
 
-    def get_first_commit (self):
-        return min([c['author_date'] for c in self.commits_all])
+    def _filter_commits (self, filter_arg):
+        return [c for c in self.commits_all if c.get('company') == filter_arg]
 
-    def get_latest_commit (self):
-        return max([c['author_date'] for c in self.commits_all])
-
-    def _get_filtered_commits_by_date (self, commits, d1, d2):
-        return [c for c in commits if (c['author_date'] >= d1 and
-                                       c['author_date'] <= d2)]
-
-    def _get_authors_dict (self, commits):
-        authors = {}
-        for author in list(set([x['author'] for x in commits])):
-            authors[author] = len([c for c in commits if c['author'] == author])
-        return authors
-
-    def get_unknown_commits (self):
-        return [c for c in self.commits_all if not c.get('company')]
-
-    def run (self):
-        raise NotImplementedError ('You must implement run()')
 
 
 class Company_Report:
@@ -192,13 +166,7 @@ class HTML_Report_Period_Commits():
 
 def generate_release_commits_HTML_report():
     # Periods = Releases + Global
-    all_projects = list(set(reduce(lambda x,y: x+y, [r['projects'] for r in releases.releases])))
-
-    periods = releases.releases[:]
-    periods.append ({'name':    "Global",
-                     'period':  (releases.releases[0]['period'][0],
-                                 releases.releases[-1]['period'][1]),
-                     'projects': all_projects})
+    periods = releases.get_all_releaes_dicts (add_global = True)
 
     # Generate reports
     for r in periods:
