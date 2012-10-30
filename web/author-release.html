@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/flotr2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="author-release.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" href="project-release.css">
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">OpenStack Contributions</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list" id="companies">
+              <li class="nav-header">Top 10 Contributors</li>
+		    <li id="contributors_top10"></li>
+              <li class="nav-header">Contributors</li>
+		    <li id="contributors"></li>
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+          <div class="hero-unit">
+            <h1></h1>
+		  <div id="global">
+		    <div id="global_graph_pie"></div>
+		    <div id="global_graph"></div>
+		    <div id="global_legend"></div>
+		  </div>
+		</div>
+		<div id="graphs"></div>
+        </div>
+	 </div>
+    </div>
+
+    <!-- Footer -->
+    <hr>
+    <footer>
+      <span><a href="https://github.com/alobbs/openstack-contributions">openstack-contributions</a> at Github</span>
+	 <span style="position:absolute; right: 20px;">&copy; 2012 <a href="mail:alvaro@alobbs.com">Alvaro Lopez Ortega</a></span>
+    </footer>
+  </body>
+</html>

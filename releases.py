@@ -17,7 +17,7 @@ releases = [
 ]
 
 
-def get_all_releaes_dicts (add_global = False):
+def get_all_releases_dicts (add_global = False):
     # Do not add 'global'
     if not add_global:
         return releases[:]

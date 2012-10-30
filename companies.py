@@ -16,7 +16,7 @@ KNOWN = ['redhat', 'canonical', 'rackspace', 'ibm', 'pistoncloud', 'nebula', 'cl
 
 
 def commit_set_company (commit):
-    co     = None
+    co          = None
     author      = commit['author'].lower()
     author_date = int(commit['author_date'])
     email       = commit['author_email'].lower()

@@ -11,3 +11,12 @@ body {
     width: 850px;
     height: 400px;
 }
+
+#global_graph_pie {
+    width: 850px;
+    height: 300px;
+}
+
+.author_company {
+    float: right;
+}
