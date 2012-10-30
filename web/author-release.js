@@ -101,7 +101,8 @@ $(function() {
     if (!project || !release)
 	   return;
 
-    $("h1").html(capitalise(project)+ ' developers during ' +capitalise(release));
+    $("h1").html(capitalise(project))
+    $("h3").html(capitalise(release) + ' release');
 
     $.ajax({
 	   url:      'authors-' + project+'-'+release+'.js',
