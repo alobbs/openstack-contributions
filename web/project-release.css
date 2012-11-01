@@ -24,3 +24,13 @@ body {
 h3 {
     float: right;
 }
+
+#graph_time {
+    width: 850px;
+    height: 400px;
+}
+
+#graph_pie {
+    width: 850px;
+    height: 400px;
+}

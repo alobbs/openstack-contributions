@@ -43,7 +43,7 @@ function addGlobalReport (data)
 
     // Developer: stacked
     authors_info = data.commits_num.info.slice (0,10);
-    Flotr.draw (document.getElementById("global_graph"), authors_info, {
+    Flotr.draw (document.getElementById("graph_time"), authors_info, {
 	   bars: {
 		  show: true,
 		  stacked : true,

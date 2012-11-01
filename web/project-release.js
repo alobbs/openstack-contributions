@@ -55,6 +55,35 @@ function addGlobalReport (data)
     $(".unknown_commits_num").html(data.unknown_commits_num);
 }
 
+function add_workforce_graph (data)
+{
+    /* Draw graph */
+    Flotr.draw (document.getElementById("graph_pie"), data.authors_by_company, {
+	   pie : {
+		  show : true,
+	   },
+	   legend: {
+		  position : 'se',
+		  backgroundColor : '#D2E8FF'
+	   },
+	   xaxis : {
+		  tickFormatter: function (num) {
+			 unixtime = data.time_start + (num * data.time_lapse);
+			 date = new Date (unixtime * 1000);
+			 return MONTH_NAMES[date.getMonth()] + date.getYear()%100;
+		  }
+	   },
+	   yaxis : {
+		  min: 0,
+		  max: data.commits_num.highest_value,
+		  tickDecimals: 0,
+	   }
+    });
+
+    /* Unknown commits */
+    $(".unknown_commits_num").html(data.unknown_commits_num);
+}
+
 function addCompanyReports (data)
 {
     for (cn in data.commits_num.info) {
@@ -172,7 +201,8 @@ $(function() {
     if (!project || !release)
 	   return;
 
-    $("h1").html(capitalise(release) +' : '+ capitalise(project));
+    $("h1").html(capitalise(project))
+    $("h3").html(capitalise(release) + ' release');
 
     $.ajax({
 	   url:       project+'-'+release+'.js',
@@ -182,6 +212,7 @@ $(function() {
 	   {
 		  addCompanyReports (data);
 		  addGlobalReport (data);
+		  add_workforce_graph (data);
 	   }
     });
 });

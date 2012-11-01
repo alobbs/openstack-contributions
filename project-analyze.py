@@ -85,6 +85,7 @@ class HTML_Report_Period_Commits():
         self.unknown_commits_num = None
         self.time_start          = None
         self.time_lapse          = None
+        self.authors_by_company  = None
 
     # JSON
     #
@@ -117,9 +118,34 @@ class HTML_Report_Period_Commits():
         return {"info":          companies_jsons,
                 "highest_value": highest_global}
 
+    def _get_authors_by_company (self, analyzer):
+        commits = analyzer._get_filtered_commits_by_date (analyzer.commits_all,
+                                                          analyzer.date_start,
+                                                          analyzer.date_end)
+
+        def get_num_authors (company):
+            company_commits = [c for c in commits if c['company'] == company]
+            company_authors = list(set([c['author'] for c in company_commits]))
+            return len(company_authors)
+
+        companies = list(set([c['company'] for c in commits]))
+        companies_sorted = sorted (companies, key=lambda c: get_num_authors(c), reverse=True)
+        authors_total = sum([get_num_authors(c) for c in companies])
+
+        d = []
+        authors_top = 0
+        for company in companies_sorted[:9]:
+            num_authors = get_num_authors(company)
+            authors_top += num_authors
+            d += [{'label': company, 'data': [[0, num_authors]]}]
+
+        d += [{'label': 'Rest', 'data': [[0, authors_total - authors_top]]}]
+        return d
+
     def _get_JSON_all_companies (self):
         return {'commits_num':         self._get_JSON_property_all_companies ('commits_num'),
                 'commits_size':        self._get_JSON_property_all_companies ('commits_size'),
+                'authors_by_company':  self.authors_by_company,
                 'time_start':          self.time_start,
                 'time_lapse':          self.time_lapse,
                 'unknown_commits_num': self.unknown_commits_num}
@@ -137,6 +163,8 @@ class HTML_Report_Period_Commits():
                 self.time_start = analyzer.date_start
             if self.time_lapse is None:
                 self.time_lapse = analyzer.lapse
+            if self.authors_by_company is None:
+                self.authors_by_company = self._get_authors_by_company (analyzer)
 
         # Print the results
         obj = self._get_JSON_all_companies()
