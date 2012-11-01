@@ -62,6 +62,13 @@ function add_workforce_graph (data)
 	   pie : {
 		  show : true,
 	   },
+	   mouse : {
+		  track : true,
+		  trackFormatter  : function (o) {
+			 return o.series.label + ': ' + o.series.data[0][1];
+		  },
+	   },
+	   HtmlText : false,
 	   legend: {
 		  position : 'se',
 		  backgroundColor : '#D2E8FF'

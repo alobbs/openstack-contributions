@@ -134,7 +134,7 @@ class HTML_Report_Period_Commits():
 
         d = []
         authors_top = 0
-        for company in companies_sorted[:9]:
+        for company in [c for c in companies_sorted[:10] if c]:
             num_authors = get_num_authors(company)
             authors_top += num_authors
             d += [{'label': company, 'data': [[0, num_authors]]}]
