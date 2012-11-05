@@ -184,9 +184,14 @@ def generate_release_commits_HTML_report():
                                                  date_start = r["period"][0],
                                                  date_end   = r["period"][1])
 
+            base_dir = os.path.dirname (os.path.abspath(__file__))
+            json_dir = os.path.join (base_dir, "web", "json")
+            if not os.path.exists (json_dir):
+                os.makedirs (json_dir)
+
             # Write JSON file
             report_name = '%s-%s.js' %(proj_name, r['name'].lower())
-            report_path = os.path.join ("web", report_name)
+            report_path = os.path.join (json_dir, report_name)
 
             print ("Writing %s..." %(report_path))
             with open(report_path, 'w+') as f:

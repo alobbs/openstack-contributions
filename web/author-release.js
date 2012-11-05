@@ -105,7 +105,7 @@ $(function() {
     $("h3").html(capitalise(release) + ' release');
 
     $.ajax({
-	   url:      'authors-' + project+'-'+release+'.js',
+	   url:      'json/authors-' + project+'-'+release+'.js',
 	   dataType: 'json',
 	   error:     function (e) {console.log(e);},
 	   success:   function (data)

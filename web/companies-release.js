@@ -212,7 +212,7 @@ $(function() {
     $("h3").html(capitalise(release) + ' release');
 
     $.ajax({
-	   url:       project+'-'+release+'.js',
+	   url:      'json/' + project+'-'+release+'.js',
 	   dataType: 'json',
 	   error:     function (e) {console.log(e);},
 	   success:   function (data)
