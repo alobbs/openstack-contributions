@@ -4,16 +4,49 @@ __author__    = "Alvaro Lopez Ortega"
 __email__     = "alvaro@alobbs.com"
 __license__   = "MIT"
 
-
+import re
 import utils
 
-KNOWN = ['redhat', 'canonical', 'rackspace', 'ibm', 'pistoncloud', 'nebula', 'cloudscaling',
-         'nec', 'ntt', 'yahoo', 'citrix', 'calxeda', 'inktank', 'stillhq', 'vmware', 'intel',
-         'netapp', 'suse', 'wikimedia', 'zadarastorage', 'midokura', 'hp', 'codestud', 'att',
-         'valinux', 'term.ie', 'fathomdb', 'solidfire', 'nasa', 'mirantis', 'openstack',
-         'internap', 'cloudbase', 'enovance', 'crowdtilt']
+DOMAIN_MATCH = {
+    'Red Hat':        re.compile(r'(redhat|fedora|gluster)'),
+    'Rackspace':      re.compile(r'(rackspace|ansolabs)'),
+    'Citrix':         re.compile(r'(citrix|cloud\.com)'),
+    'VMWare':         re.compile(r'(vmware|nicira)'),
+    'Canonical':      re.compile(r'(canonical|ubuntu)'),
+    'Mirantis':       re.compile(r'(mirantis|griddynamics)'),
+    'Nebula':         re.compile(r'nabula'),
+    'DELL':           re.compile(r'dell'),
+    'Intel':          re.compile(r'intel'),
+    'Piston Cloud':   re.compile(r'pistoncloud'),
+    'HP':             re.compile(r'hp\.com'),
+    'IBM':            re.compile(r'ibm'),
+    'NetApp':         re.compile(r'netapp'),
+    'SuSE':           re.compile(r'suse'),
+    'NEC':            re.compile(r'nec'),
+    'NTT':            re.compile(r'ntt'),
+    'NASA':           re.compile(r'nasa'),
+    'CloudScaling':   re.compile(r'cloudscaling'),
+    'Yahoo!':         re.compile(r'yahoo'),
+    'Calxeda':        re.compile(r'calxeda'),
+    'Inktank':        re.compile(r'inktank'),
+    'StillHQ':        re.compile(r'stillhq'),
+    'Wikipedia':      re.compile(r'wikipedia'),
+    'Zadara Storage': re.compile(r'zadarastorage'),
+    'Midokura':       re.compile(r'midokura'),
+    'CodeStud':       re.compile(r'codestud'),
+    'AT&T':           re.compile(r'att'),
+    'VA Linux':       re.compile(r'valinux'),
+    'Term.IE':        re.compile(r'term.ie'),
+    'FathomDB':       re.compile(r'fathomdb'),
+    'Solid Fire':     re.compile(r'solidfire'),
+    'OpenStack':      re.compile(r'openstack'),
+    'InterNap':       re.compile(r'internap'),
+    'CloudBase':      re.compile(r'cloudbase'),
+    'Enovance':       re.compile(r'enovance'),
+    'Crowd Tilt':     re.compile(r'crowdtilt'),
+}
 
-
+KNOWN = DOMAIN_MATCH.keys()
 
 def commit_set_company (commit):
     co          = None
@@ -21,73 +54,52 @@ def commit_set_company (commit):
     author_date = int(commit['author_date'])
     email       = commit['author_email'].lower()
 
-    # Companies: special cases
-    if 'hp.com' in email:
-        co = 'hp'
-    elif 'ubuntu' in email:
-        co = 'canonical'
+    # Check email's domain
+    for company in DOMAIN_MATCH:
+        matched = DOMAIN_MATCH[company].findall (email)
+        if matched:
+            commit['company'] = company
+            return commit
 
-    # Companies: adquisitions
-    elif 'ansolabs' in email:
-        co = 'rackspace'
-    elif 'cloud.com' in email:
-        co = 'citrix'
-    elif 'nicira' in email:
-        co = 'vmware'
-    elif 'griddynamics' in email:
-        co = 'mirantis'
-    elif 'gluster' in email:
-        co = 'redhat'
-
-    # People
-    elif 'vishvananda' in email:
-        co = 'rackspace'
+    # Check author's email addresses
+    if (('vishvananda' in email) or
+        ('anthony young' in author) or
+        ('jason koelker' in author or 'jason köelker' in author)):
+        co = 'Rackspace'
     elif 'joshua mckenty' in author:
-        co = 'nasa'
+        co = 'NASA'
     elif 'jesse andrews' in author:
         if author_date < utils.date_to_unix(2011,02):
-            co = 'nasa'
+            co = 'NASA'
         elif author_date < utils.date_to_unix(2011,07):
-            co = 'rackspace'
+            co = 'Rackspace'
         elif author_date < utils.date_to_unix(2012,07):
-            co = 'nebula'
+            co = 'Nebula'
     elif 'gabriel hurley' in author:
         if author_date < utils.date_to_unix(2011,07):
-            co = 'nasa'
+            co = 'NASA'
         else:
-            co = 'nebula'
+            co = 'Nebula'
     elif 'devin carlen' in author:
         if author_date < utils.date_to_unix(2011,03):
-            co = 'nasa'
+            co = 'NASA'
         else:
-            co = 'nebula'
+            co = 'Nebula'
     elif 'jay pipes' in author:
         if author_date < utils.date_to_unix(2011,12):
-            co = 'rackspace'
+            co = 'Rackspace'
         elif author_date < utils.date_to_unix(2012,06):
-            co = 'hp'
+            co = 'HP'
         else:
-            co = 'att'
+            co = 'AT&T'
     elif 'yun mao' in author:
-        co = 'att'
+        co = 'AT&T'
     elif 'rick harris' in author:
-        co = 'vmware'
+        co = 'VMWare'
     elif 'alessandro pilotti' in author:
-        co = 'cloudbase'
-    elif 'jason koelker' in author or 'jason köelker' in author:
-        co = 'rackspace'
+        co = 'CloudBase'
     elif 'william wolf' in author:
-        co = 'crowdtilt'
-    elif 'anthony young' in author:
-        co = 'rackspace'
-    else:
-        # Check email addresses
-        for nc in KNOWN:
-            if nc == 'hp':
-                continue
-
-            if nc in email:
-                co = nc
+        co = 'Crowd Tilt'
 
     # A few special cases
     commit['company'] = co

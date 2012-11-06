@@ -25,12 +25,6 @@ function addGlobalReport (data)
 	   return $.inArray (co_name, companies_activated) >= 0;
     });
 
-    /* Fix the names of the legend */
-    // FIX ME: Something is broken here (Eg: Check and uncheck company)
-    //   $.each (companies_info, function (n, obj) {
-    //      obj.label = capitalise (obj.label);
-    //   });
-
     /* Draw graph */
     Flotr.draw (document.getElementById("global_graph"), companies_info, {
 	   legend: {
@@ -102,7 +96,7 @@ function addCompanyReports (data)
 
 	   /* Company List */
 	   if (company_data_num.total <=0) {
-		  $("#lazy_fellows").append('<li>'+ capitalise(company_data_num.label) +'</li>');
+		  $("#lazy_fellows").append('<li>'+ company_data_num.label +'</li>');
 		  continue;
 	   }
 
@@ -123,7 +117,7 @@ function addCompanyReports (data)
 
 	   /* Graph: number */
 	   Flotr.draw (document.getElementById(id_graph_num), company_data_num,
-				{title: capitalise(company_data_num.label),
+				{title: company_data_num.label,
 				 bars: {
 					show: true,
 					barWidth: 0.9,
@@ -174,7 +168,7 @@ function addCompanyReports (data)
 				});
 
 	   /* Contributors lists */
-	   var caption    = capitalise(company_data_num.label) +' ('+ company_data_num.total +')';
+	   var caption    = company_data_num.label +' ('+ company_data_num.total +')';
 	   var control_id = "control_" + id_graph;
 	   var len        = $("#contributors_top5").find("li").length;
 
