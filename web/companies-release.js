@@ -196,8 +196,8 @@ function addCompanyReports (data)
 
 
 $(function() {
-    var project = getURLParameter("project").replace(/[^a-z]+/gi,'');
-    var release = getURLParameter("release").replace(/[^a-z]+/gi,'');
+    var project = getURLParameter("project").replace(/[^a-z-]+/gi,'');
+    var release = getURLParameter("release").replace(/[^a-z-]+/gi,'');
 
     if (!project || !release)
 	   return;
