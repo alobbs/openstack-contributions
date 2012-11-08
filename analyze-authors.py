@@ -168,7 +168,6 @@ def generate_release_authors_HTML_report():
 
     # Generate reports
     for r in periods:
-        print r
         for proj_name in r['projects']:
             # Generate report
             report = HTML_Report_Period_Authors (proj_name,

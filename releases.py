@@ -20,13 +20,21 @@ releases = [
 
 
 def get_all_releases_dicts ():
+    # Add a 'global' release
+    rel = releases[:]
+    rel += [{"name":   "Global",
+             "period": (rel[0]['period'][0],
+                        rel[-1]['period'][1]),
+             "projects": ["openstack"]}]
+
+    # Figure out project on each release
     for project in projects.get_project_list():
         commits = gitlog.get_commits (project)
-        for r in releases:
+        for r in rel:
             commits_release = [c for c in commits
                                if (c['author_date'] >= r['period'][0] and
                                    c['author_date'] <= r['period'][1])]
             if len(commits_release) > 1:
                 r['projects'].append (project)
 
-    return releases
+    return rel
