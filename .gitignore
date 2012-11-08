@@ -32,3 +32,6 @@ pip-log.txt
 repos
 cache
 web/json
+web/author.html
+web/company.html
+web/index.html
