@@ -9,7 +9,6 @@ import os
 import conf
 import time
 import json
-import argparse
 import projects
 import patches
 import companies
@@ -18,11 +17,6 @@ import releases
 import gitlog
 import authors
 from analyzer import Analyzer_Time_Slicer
-
-# Argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument ('--use-cache', action="store_true", default=False, help="use a log cache")
-ns = parser.parse_args()
 
 
 class Author_Report:
@@ -35,8 +29,8 @@ class Author_Report:
 
 
 class Author_Analyzer_by_date (Analyzer_Time_Slicer):
-    def __init__ (self, project, filter_arg, use_cache, date_start=None, date_end=None, lapse=None):
-        Analyzer_Time_Slicer.__init__ (self, project, filter_arg, use_cache, date_start, date_end, lapse)
+    def __init__ (self, project, filter_arg, date_start=None, date_end=None, lapse=None):
+        Analyzer_Time_Slicer.__init__ (self, project, filter_arg, date_start, date_end, lapse)
         self.company_commits = self.commits_filtered
 
     def _filter_commits (self, filter_arg):
@@ -84,11 +78,10 @@ class Author_Analyzer_by_date (Analyzer_Time_Slicer):
 
 
 class HTML_Report_Period_Authors:
-    def __init__ (self, project, use_cache, *args, **kwargs):
-        all_commits              = gitlog.get_commits (project, use_cache)
+    def __init__ (self, project, *args, **kwargs):
+        all_commits              = gitlog.get_commits (project)
         self.authors             = authors.get_all_authors_dict (all_commits)
         self.project             = project
-        self.use_cache           = use_cache
         self.args                = args
         self.kwargs              = kwargs
         self.report              = {}
@@ -153,7 +146,7 @@ class HTML_Report_Period_Authors:
 
     def get_JSON (self):
         for author in self.authors:
-            analyzer = Author_Analyzer_by_date (self.project, author, self.use_cache, *self.args, **self.kwargs)
+            analyzer = Author_Analyzer_by_date (self.project, author, *self.args, **self.kwargs)
             analyzer.run()
             self.report[author] = analyzer.report
 
@@ -178,7 +171,6 @@ def generate_release_authors_HTML_report():
         for proj_name in r['projects']:
             # Generate report
             report = HTML_Report_Period_Authors (proj_name,
-                                                 use_cache  = ns.use_cache,
                                                  date_start = r["period"][0],
                                                  date_end   = r["period"][1]);
 

@@ -8,10 +8,10 @@ __license__   = "MIT"
 import gitlog
 
 class Analyzer_Base:
-    def __init__ (self, repo, filter_arg, use_cache, date_start=None, date_end=None):
+    def __init__ (self, repo, filter_arg, date_start=None, date_end=None):
         self.repo        = repo
         self.filter_arg  = filter_arg
-        self.commits_all = gitlog.get_commits (repo, use_cache)
+        self.commits_all = gitlog.get_commits (repo)
         self.date_start  = date_start or self.get_first_commit()
         self.date_end    = date_end   or self.get_latest_commit()
 
@@ -54,8 +54,8 @@ class Analyzer_Base:
 class Analyzer_Time_Slicer (Analyzer_Base):
     DEFAULT_LAPSE = 7*24*60*60
 
-    def __init__ (self, repo, filter_arg, use_cache, date_start=None, date_end=None, lapse=None):
-        Analyzer_Base.__init__ (self, repo, filter_arg, use_cache, date_start, date_end)
+    def __init__ (self, repo, filter_arg, date_start=None, date_end=None, lapse=None):
+        Analyzer_Base.__init__ (self, repo, filter_arg, date_start, date_end)
         self.lapse = lapse or self.DEFAULT_LAPSE
 
     def _get_time_points (self):

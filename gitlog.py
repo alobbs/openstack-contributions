@@ -48,7 +48,7 @@ def parse_git_log (project, with_company=True):
 
 
 _commits = {}
-def get_commits (project, use_cache):
+def get_commits (project):
     # Cache
     global _commits
     if _commits.has_key (project):
@@ -57,10 +57,13 @@ def get_commits (project, use_cache):
     cache_fp = os.path.join (conf.CACHE_PATH, project + '-log.pickle')
 
     # Disk cache
-    if use_cache and os.path.exists(cache_fp):
-        _commits[project] = pickle.load (open (cache_fp, 'r'))
-    else:
-        _commits[project] = parse_git_log (project)
-        pickle.dump (_commits[project], open(cache_fp, 'w+'))
+    if not os.path.exists(cache_fp):
+        print ("%s not found: Execute ./preprocessor.py"%(cache_fp))
 
+    _commits[project] = pickle.load (open (cache_fp, 'r'))
     return _commits[project]
+
+
+def generate_cache_file (project):
+    cache_fp = os.path.join (conf.CACHE_PATH, project + '-log.pickle')
+    pickle.dump (parse_git_log (project), open(cache_fp, 'w+'))

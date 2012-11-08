@@ -4,6 +4,7 @@ OpenStack Contribution Analyzer
 A common execution to generate the contributions statistics would include:
 
  * `./repo-fetch.py`                    \# Fetches the latest changes from the OpenStack repositories
+ * `./preprocessor.py`                  \# Pre-process the project commits log
  * `./analyze-authors.py --use-cache`   \# Generates the authos report
  * `./analyze-companies.py --use-cache` \# Generates the companies report
 

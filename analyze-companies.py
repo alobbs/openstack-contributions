@@ -9,18 +9,12 @@ import os
 import conf
 import time
 import json
-import argparse
 import projects
 import patches
 import companies
 import utils
 import releases
 from analyzer import Analyzer_Time_Slicer
-
-# Argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument ('--use-cache', action="store_true", default=False, help="use a log cache")
-ns = parser.parse_args()
 
 
 class Company_Report:
@@ -32,8 +26,8 @@ class Company_Report:
 
 
 class Company_Analyzer_by_date (Analyzer_Time_Slicer):
-    def __init__ (self, project, filter_arg, use_cache, date_start=None, date_end=None, lapse=None):
-        Analyzer_Time_Slicer.__init__ (self, project, filter_arg, use_cache, date_start, date_end, lapse)
+    def __init__ (self, project, filter_arg, date_start=None, date_end=None, lapse=None):
+        Analyzer_Time_Slicer.__init__ (self, project, filter_arg, date_start, date_end, lapse)
         self.company_commits = self.commits_filtered
 
     def _filter_commits (self, filter_arg):
@@ -180,7 +174,6 @@ def generate_release_commits_HTML_report():
         for proj_name in r['projects']:
             # Generate report
             report = HTML_Report_Period_Commits (proj_name,
-                                                 use_cache  = ns.use_cache,
                                                  date_start = r["period"][0],
                                                  date_end   = r["period"][1])
 
