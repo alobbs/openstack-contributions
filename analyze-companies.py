@@ -167,7 +167,7 @@ class HTML_Report_Period_Commits():
 
 def generate_release_commits_HTML_report():
     # Periods = Releases + Global
-    periods = releases.get_all_releases_dicts (add_global = True)
+    periods = releases.get_all_releases_dicts()
 
     # Generate reports
     for r in periods:

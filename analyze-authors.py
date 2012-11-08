@@ -163,11 +163,12 @@ class HTML_Report_Period_Authors:
 
 
 def generate_release_authors_HTML_report():
-    # Periods = Releases + Global
-    periods = releases.get_all_releases_dicts (add_global = True)
+    # Periods = Releases
+    periods = releases.get_all_releases_dicts()
 
     # Generate reports
     for r in periods:
+        print r
         for proj_name in r['projects']:
             # Generate report
             report = HTML_Report_Period_Authors (proj_name,

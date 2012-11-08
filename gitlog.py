@@ -65,5 +65,8 @@ def get_commits (project):
 
 
 def generate_cache_file (project):
+    save_cache_file (parse_git_log (project), project)
+
+def save_cache_file (project, content):
     cache_fp = os.path.join (conf.CACHE_PATH, project + '-log.pickle')
-    pickle.dump (parse_git_log (project), open(cache_fp, 'w+'))
+    pickle.dump (content, open(cache_fp, 'w+'))
