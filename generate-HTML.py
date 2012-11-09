@@ -39,6 +39,7 @@ def generate_index():
     # Template
     tpl = open (templ_fp, 'r').read()
     tpl = tpl.replace ('${{MAIN}}', html)
+    tpl = tpl.replace ('${{HEADERS}}', '')
 
     with open(index_fp, 'w+') as f:
         f.write (tpl)
@@ -72,27 +73,36 @@ AUTHOR_MAIN = """
 <div id="graph_num"></div>
 """
 
+AUTHOR_HEADER = """
+<script src="author-release.js"></script>
+"""
 
 def generate_authors():
     base_dir = os.path.dirname (os.path.abspath(__file__))
-    author_fp = os.path.join (base_dir, "web", "author.html")
     templa_fp = os.path.join (base_dir, "web", "template.html")
+    author_fp = os.path.join (base_dir, "web", "author.html")
 
     # Template
     tpl = open (templa_fp, 'r').read()
-    tpl = tpl.replace ('${{MAIN}}', AUTHOR_MAIN)
     tpl = tpl.replace ('${{NAV-LIST}}', AUTHOR_NAV)
+    tpl = tpl.replace ('${{MAIN}}',     AUTHOR_MAIN)
+    tpl = tpl.replace ('${{HEADERS}}',  AUTHOR_HEADER)
 
     # Write down file
     with open(author_fp, 'w+') as f:
         f.write (tpl)
 
+
 COMPANY_NAV = """
 <ul class="nav nav-list" id="companies">
-  <li class="nav-header">Top 10 Contributors</li>
-  <li id="contributors_top10"></li>
+  <li class="nav-header">Top 5 Contributors</li>
+  <li id="contributors_top5"></li>
+
   <li class="nav-header">Contributors</li>
   <li id="contributors"></li>
+
+  <li class="nav-header">Non-Contributors</li>
+  <li id="lazy_fellows"></li>
 </ul>
 """
 
@@ -102,29 +112,34 @@ COMPANY_MAIN = """
   <h1></h1>
 </div>
 
-<h4>Top 10 Contributors</h4>
+<h4>Top 5 Companies Activity</h4>
 <div id="global">
-  <div id="global_graph_pie"></div>
+  <div id="global_graph"></div>
   <div id="global_legend"></div>
+  <p>Additional <span class="unknown_commits_num"></span> commits from individual contributions and unknown companies.</p>
 </div>
 
-<h4>Top 10 Contributors during the release</h4>
-<div id="graph_time"></div>
+<h4>Top 10 Companies by Number of Developers</h4>
+<div id="graph_pie"></div>
 
-<h4>Top 10 Contributors during the release</h4>
-<div id="graph_num"></div>
+<h4>Companies activity</h4>
+<div id="graphs"></div>
 """
 
+COMPANY_HEADER = """
+<script src="companies-release.js"></script>
+"""
 
 def generate_companies():
     base_dir = os.path.dirname (os.path.abspath(__file__))
-    comps_fp = os.path.join (base_dir, "web", "company.html")
     templ_fp = os.path.join (base_dir, "web", "template.html")
+    comps_fp = os.path.join (base_dir, "web", "company.html")
 
     # Template
     tpl = open (templ_fp, 'r').read()
-    tpl = tpl.replace ('${{MAIN}}', COMPANY_MAIN)
     tpl = tpl.replace ('${{NAV-LIST}}', COMPANY_NAV)
+    tpl = tpl.replace ('${{MAIN}}',     COMPANY_MAIN)
+    tpl = tpl.replace ('${{HEADERS}}',  COMPANY_HEADER)
 
     # Write down file
     with open(comps_fp, 'w+') as f:
